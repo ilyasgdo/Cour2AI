@@ -19,10 +19,6 @@ matrice_interventions = np.array([
 hauteur, largeur = matrice_interventions.shape
 total_operations = matrice_interventions.sum()
 
-
-# ----------------------------------
-# Définition des structures
-# ----------------------------------
 class Individu:
     def __init__(self, x=None, y=None):
         # Accès aux variables globales
@@ -37,9 +33,7 @@ class Individu:
         print(f"cout total: {cout_total}")
         self.adaptation = cout_total / total_operations
         return self.adaptation
-# ----------------------------------
-# Opérateurs génétiques
-# ----------------------------------
+
 def croisement(parent1, parent2):
     """Crée deux enfants par échange de coordonnées"""
     enfant1 = Individu(parent1.x, parent2.y)
@@ -47,22 +41,21 @@ def croisement(parent1, parent2):
     return enfant1, enfant2
 
 
-def mutation(individu):
-    """Modifie légèrement la position"""
-    if random.random() < 0.5:
-        nouveau_x = individu.x + random.choice([-1, 0, 1])
-        individu.x = np.clip(nouveau_x, 0, largeur - 1)
-    else:
-        nouveau_y = individu.y + random.choice([-1, 0, 1])
-        individu.y = np.clip(nouveau_y, 0, hauteur - 1)
+def mutation(individu, prob_mutation=0.7):
+    # Mutation de x avec probabilité prob_mutation/2
+    if random.random() < prob_mutation / 2:
+        individu.x = np.clip(individu.x + random.choice([-1, 1]), 0, largeur - 1)
+
+    # Mutation de y avec probabilité prob_mutation/2
+    if random.random() < prob_mutation / 2:
+        individu.y = np.clip(individu.y + random.choice([-1, 1]), 0, hauteur - 1)
+
     return individu
 
 
-# ----------------------------------
-# Algorithme principal
-# ----------------------------------
+
 def algorithme_evolutionnaire():
-    taille_population = 5999
+    taille_population = 34564
     population = [Individu() for _ in range(taille_population)]
     meilleur_historique = None
     generation = 0
@@ -101,13 +94,9 @@ def algorithme_evolutionnaire():
     return meilleur_historique
 
 
-# ----------------------------------
-# Exécution et résultats
-# ----------------------------------
+
 solution_optimale = algorithme_evolutionnaire()
 print(f"Position optimale: ({solution_optimale.x}, {solution_optimale.y})")
 print(f"Coût moyen: {solution_optimale.adaptation:.2f} km/intervention")
 
-print("testtttt")
-ao=Individu(0,0)
-ao.calculer_adaptation()
+
